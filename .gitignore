@@ -3,3 +3,6 @@
 # Local Compiled files
 bin/
 artifacts/
+
+.env
+node_modules/
