@@ -414,3 +414,31 @@ contract TRUSTERC20Token is ERC20Permit, VaultOwned {
         _burn(account_, amount_);
     }
 }
+
+contract uTrustStableToken is ERC20Permit {
+
+    using LowGasSafeMath for uint256;
+
+    constructor() ERC20("uTRUST", "uTRST", 18) {
+    }
+
+    function mint(address account_, uint256 amount_) external {
+        _mint(account_, amount_);
+    }
+
+    function burn(uint256 amount) external virtual {
+        _burn(msg.sender, amount);
+    }
+     
+    function burnFrom(address account_, uint256 amount_) external virtual {
+        _burnFrom(account_, amount_);
+    }
+
+    function _burnFrom(address account_, uint256 amount_) internal virtual {
+        uint256 decreasedAllowance_ =
+            allowance(account_, msg.sender).sub(amount_);
+
+        _approve(account_, msg.sender, decreasedAllowance_);
+        _burn(account_, amount_);
+    }
+}

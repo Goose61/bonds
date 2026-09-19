@@ -2,13 +2,13 @@ const { ethers } = require("hardhat");
 
 async function main() {
   const [deployer] = await ethers.getSigners();
-  console.log("Deploying TRUSTERC20Token with account:", deployer.address);
+  console.log("Deploying uTrustStableToken with account:", await deployer.getAddress());
 
-  const TRUSTERC20Token = await ethers.getContractFactory("TRUSTERC20Token");
-  const token = await TRUSTERC20Token.deploy();
+  const uTrustStableToken = await ethers.getContractFactory("uTrustStableToken");
+  const token = await uTrustStableToken.deploy();
   await token.waitForDeployment();
 
-  console.log("TRUSTERC20Token deployed to:", await token.getAddress());
+  console.log("uTrustStableToken deployed to:", await token.getAddress());
 }
 
 main()
