@@ -513,15 +513,15 @@ interface IDistributor {
     function distribute() external returns ( bool );
 }
 
-contract TimeStaking is Ownable {
+contract TrustStaking is Ownable {
 
     using LowGasSafeMath for uint256;
     using LowGasSafeMath for uint32;
     using SafeERC20 for IERC20;
     using SafeERC20 for IMemo;
 
-    IERC20 public immutable Time;
-    IMemo public immutable Memories;
+    IERC20 public immutable Trust;
+    IMemo public immutable Promises;
 
     struct Epoch {
         uint number;
@@ -548,16 +548,16 @@ contract TimeStaking is Ownable {
     event LogWarmupPeriod(uint period);
     
     constructor ( 
-        address _Time, 
-        address _Memories, 
-        uint32 _epochLength,
-        uint _firstEpochNumber,
-        uint32 _firstEpochTime
+        address _Trust, 
+        address _Promises, 
+        uint32 _epochLength, // 10
+        uint _firstEpochNumber, // counter: 1
+        uint32 _firstEpochTime // 10s
     ) {
-        require( _Time != address(0) );
-        Time = IERC20(_Time);
-        require( _Memories != address(0) );
-        Memories = IMemo(_Memories);
+        require( _Trust != address(0) );
+        Trust = IERC20(_Trust);
+        require( _Promises != address(0) );
+        Promises = IMemo(_Promises);
         
         epoch = Epoch({
             length: _epochLength,
@@ -583,19 +583,19 @@ contract TimeStaking is Ownable {
     function stake( uint _amount, address _recipient ) external returns ( bool ) {
         rebase();
         
-        Time.safeTransferFrom( msg.sender, address(this), _amount );
+        Trust.safeTransferFrom( msg.sender, address(this), _amount );
 
         Claim memory info = warmupInfo[ _recipient ];
         require( !info.lock, "Deposits for account are locked" );
 
         warmupInfo[ _recipient ] = Claim ({
             deposit: info.deposit.add( _amount ),
-            gons: info.gons.add( Memories.gonsForBalance( _amount ) ),
+            gons: info.gons.add( Promises.gonsForBalance( _amount ) ),
             expiry: epoch.number.add( warmupPeriod ),
             lock: false
         });
         
-        Memories.safeTransfer( address(warmupContract), _amount );
+        Promises.safeTransfer( address(warmupContract), _amount );
         emit LogStake(_recipient, _amount);
         return true;
     }
@@ -608,21 +608,21 @@ contract TimeStaking is Ownable {
         Claim memory info = warmupInfo[ _recipient ];
         if ( epoch.number >= info.expiry && info.expiry != 0 ) {
             delete warmupInfo[ _recipient ];
-            uint256 amount = Memories.balanceForGons( info.gons );
+            uint256 amount = Promises.balanceForGons( info.gons );
             warmupContract.retrieve( _recipient,  amount);
             emit LogClaim(_recipient, amount);
         }
     }
 
     /**
-        @notice forfeit MEMO in warmup and retrieve Time
+        @notice forfeit MEMO in warmup and retrieve Trust
      */
     function forfeit() external {
         Claim memory info = warmupInfo[ msg.sender ];
         delete warmupInfo[ msg.sender ];
-        uint memoBalance = Memories.balanceForGons( info.gons );
+        uint memoBalance = Promises.balanceForGons( info.gons );
         warmupContract.retrieve( address(this),  memoBalance);
-        Time.safeTransfer( msg.sender, info.deposit);
+        Trust.safeTransfer( msg.sender, info.deposit);
         emit LogForfeit(msg.sender, memoBalance, info.deposit);
     }
 
@@ -635,7 +635,7 @@ contract TimeStaking is Ownable {
     }
 
     /**
-        @notice redeem MEMO for Time
+        @notice redeem MEMO for Trust
         @param _amount uint
         @param _trigger bool
      */
@@ -643,8 +643,8 @@ contract TimeStaking is Ownable {
         if ( _trigger ) {
             rebase();
         }
-        Memories.safeTransferFrom( msg.sender, address(this), _amount );
-        Time.safeTransfer( msg.sender, _amount );
+        Promises.safeTransferFrom( msg.sender, address(this), _amount );
+        Trust.safeTransfer( msg.sender, _amount );
         emit LogUnstake(msg.sender, _amount);
     }
 
@@ -653,7 +653,7 @@ contract TimeStaking is Ownable {
         @return uint
      */
     function index() external view returns ( uint ) {
-        return Memories.index();
+        return Promises.index();
     }
 
     /**
@@ -662,7 +662,7 @@ contract TimeStaking is Ownable {
     function rebase() public {
         if( epoch.endTime <= uint32(block.timestamp) ) {
 
-            Memories.rebase( epoch.distribute, epoch.number );
+            Promises.rebase( epoch.distribute, epoch.number );
 
             epoch.endTime = epoch.endTime.add32( epoch.length );
             epoch.number++;
@@ -672,7 +672,7 @@ contract TimeStaking is Ownable {
             }
 
             uint balance = contractBalance();
-            uint staked = Memories.circulatingSupply();
+            uint staked = Promises.circulatingSupply();
 
             if( balance <= staked ) {
                 epoch.distribute = 0;
@@ -684,11 +684,11 @@ contract TimeStaking is Ownable {
     }
 
     /**
-        @notice returns contract Time holdings, including bonuses provided
+        @notice returns contract Trust holdings, including bonuses provided
         @return uint
      */
     function contractBalance() public view returns ( uint ) {
-        return Time.balanceOf( address(this) ).add( totalBonus );
+        return Trust.balanceOf( address(this) ).add( totalBonus );
     }
 
     enum CONTRACTS { DISTRIBUTOR, WARMUP }
