@@ -6,9 +6,9 @@ async function main() {
 
   const TRUSTERC20Token = await ethers.getContractFactory("TRUSTERC20Token");
   const token = await TRUSTERC20Token.deploy();
-  await token.deployed();
+  await token.waitForDeployment();
 
-  console.log("TRUSTERC20Token deployed to:", token.address);
+  console.log("TRUSTERC20Token deployed to:", await token.getAddress());
 }
 
 main()
