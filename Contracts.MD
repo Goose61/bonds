@@ -15,4 +15,28 @@ Staking:
     Warmup: 0xc63F025DFe247a71625ba3F7Fa17584F7A315cD1
     Helper: 0xd6c89848F82976CB12ae44Df568D97b18011159e
 
-NEXT: BondDepo
+BondDepo: 0x47F72FbD2633767C97Dcc8C9EAfe531A155Ad948
+EthBondDepo: 0xB8Cb680Dae260b71D1541104773E446900b566b7
+
+
+
+## Contracts deploy order: 
+
+0. Token address and principle asset.
+
+1. Treasury is the first contract we deploy. This requires the 2 tokens that
+    will be used for buying and acquiring.
+
+2. Vault contract. Reason, is to set treasury as vault. 
+
+3. Staking contract. 
+    3.1 The actual contract where tokens will be staked.
+    3.2 Reward token will be next (Promises)
+    3.3 Warmup contract
+    3.4 Staking Helper contract.
+
+4. TimeBondDepository contract.
+5. BondingCalc contract (helper for the TimeBondDepo)
+
+6. Distributor contract.
+
