@@ -8,17 +8,16 @@ Vault address: 0x07D447B9605695A8fd0A20B5e526649f22545a2E
 
 Calculator: 0xe83a9218dCc52C2e30439e4E874414D49e0a8001
 
+
+BondDepo: 0x47F72FbD2633767C97Dcc8C9EAfe531A155Ad948
+EthBondDepo: 0xB8Cb680Dae260b71D1541104773E446900b566b7
+
 Staking:
     Reward token: 0xe02EB22540AAA66537fFBdda804cf1A49334c94a
     Staking Contract: 0x87753332E5988107217f8CD0A30607C03BFC7192
     Distrbutor: 0x26DB0dB14Fd1b746Fc4f9f3752510eb4d9Cb984c
     Warmup: 0xc63F025DFe247a71625ba3F7Fa17584F7A315cD1
     Helper: 0xd6c89848F82976CB12ae44Df568D97b18011159e
-
-BondDepo: 0x47F72FbD2633767C97Dcc8C9EAfe531A155Ad948
-EthBondDepo: 0xB8Cb680Dae260b71D1541104773E446900b566b7
-
-
 
 ## Contracts deploy order: 
 
@@ -29,14 +28,15 @@ EthBondDepo: 0xB8Cb680Dae260b71D1541104773E446900b566b7
 
 2. Vault contract. Reason, is to set treasury as vault. 
 
-3. Staking contract. 
-    3.1 The actual contract where tokens will be staked.
-    3.2 Reward token will be next (Promises)
-    3.3 Warmup contract
-    3.4 Staking Helper contract.
+3. TimeBondDepository contract.
 
-4. TimeBondDepository contract.
-5. BondingCalc contract (helper for the TimeBondDepo)
+4. BondingCalc contract (helper for the TimeBondDepo)
+
+5. Staking contract. 
+    5.1 The actual contract where tokens will be staked.
+    5.2 Reward token will be next (Promises)
+    5.3 Warmup contract
+    5.4 Staking Helper contract.
 
 6. Distributor contract.
 
