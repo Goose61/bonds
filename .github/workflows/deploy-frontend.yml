@@ -1,3 +1,4 @@
+# Redeploy: workflow_dispatch and push to main/frontend trigger this pipeline.
 name: Deploy frontend to GitHub Pages
 
 on:
