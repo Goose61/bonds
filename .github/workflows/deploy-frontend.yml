@@ -23,6 +23,15 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      VITE_BASE_PATH: /bonds/
+      VITE_RPC_URL: ${{ vars.VITE_RPC_URL || secrets.VITE_RPC_URL || 'https://ethereum-sepolia.publicnode.com' }}
+      VITE_CHAIN_ID: ${{ vars.VITE_CHAIN_ID || secrets.VITE_CHAIN_ID || '11155111' }}
+      VITE_CHAIN_NAME: ${{ vars.VITE_CHAIN_NAME || secrets.VITE_CHAIN_NAME || 'Sepolia' }}
+      VITE_BOND_DEPOSITORY: ${{ vars.VITE_BOND_DEPOSITORY || secrets.VITE_BOND_DEPOSITORY || '0x47F72FbD2633767C97Dcc8C9EAfe531A155Ad948' }}
+      VITE_STAKING: ${{ vars.VITE_STAKING || secrets.VITE_STAKING || '0x87753332E5988107217f8CD0A30607C03BFC7192' }}
+      VITE_TIME_TOKEN: ${{ vars.VITE_TIME_TOKEN || secrets.VITE_TIME_TOKEN || '0x3D61F5F32F334cF015d538c9A0e686D3b4fC249e' }}
+      VITE_PRINCIPLE_TOKEN: ${{ vars.VITE_PRINCIPLE_TOKEN || secrets.VITE_PRINCIPLE_TOKEN || '0x86b1741D99208F5A36C00bC1e9632e2179874038' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,21 +43,19 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
+      - name: Print build config
+        run: |
+          echo "VITE_CHAIN_ID=$VITE_CHAIN_ID"
+          echo "VITE_BOND_DEPOSITORY=$VITE_BOND_DEPOSITORY"
+          echo "VITE_STAKING=$VITE_STAKING"
+          echo "VITE_PRINCIPLE_TOKEN=$VITE_PRINCIPLE_TOKEN"
+
       - name: Install dependencies
         working-directory: frontend
         run: npm ci
 
       - name: Build
         working-directory: frontend
-        env:
-          VITE_BASE_PATH: /bonds/
-          VITE_RPC_URL: ${{ vars.VITE_RPC_URL || 'https://ethereum-sepolia.publicnode.com' }}
-          VITE_CHAIN_ID: ${{ vars.VITE_CHAIN_ID || '11155111' }}
-          VITE_CHAIN_NAME: ${{ vars.VITE_CHAIN_NAME || 'Sepolia' }}
-          VITE_BOND_DEPOSITORY: ${{ vars.VITE_BOND_DEPOSITORY || '0x47F72FbD2633767C97Dcc8C9EAfe531A155Ad948' }}
-          VITE_STAKING: ${{ vars.VITE_STAKING || '0x87753332E5988107217f8CD0A30607C03BFC7192' }}
-          VITE_TIME_TOKEN: ${{ vars.VITE_TIME_TOKEN || '0x3D61F5F32F334cF015d538c9A0e686D3b4fC249e' }}
-          VITE_PRINCIPLE_TOKEN: ${{ vars.VITE_PRINCIPLE_TOKEN || '0x86b1741D99208F5A36C00bC1e9632e2179874038' }}
         run: npm run build
 
       - name: Upload artifact

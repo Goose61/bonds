@@ -11,6 +11,7 @@ import { ZERO } from '../config'
 import { useContractAddresses } from '../hooks/useContractAddresses'
 import { useRefreshOnTxSuccess } from '../hooks/useRefreshOnTxSuccess'
 import { useTokenMeta } from '../hooks/useTokenMeta'
+import { reserveBondPriceInUsd } from '../utils/bond'
 import { formatToken, parseTokenInput } from '../utils/format'
 import type { ReadContracts } from '../types'
 
@@ -41,7 +42,13 @@ export function BondPanel() {
   })
 
   const bondPrice = bondMeta?.[0]?.result as bigint | undefined
-  const bondPriceUsd = bondMeta?.[1]?.result as bigint | undefined
+  const bondPriceUsdOnChain = bondMeta?.[1]?.result as bigint | undefined
+  const bondPriceUsd = useMemo(
+    () =>
+      bondPriceUsdOnChain ??
+      reserveBondPriceInUsd(bondPrice, principleMeta.decimals),
+    [bondPriceUsdOnChain, bondPrice, principleMeta.decimals],
+  )
   const currentDebt = bondMeta?.[2]?.result as bigint | undefined
   const terms = bondMeta?.[3]?.result as
     | readonly [bigint, bigint, bigint, bigint, bigint, number]

@@ -68,17 +68,19 @@ The repo includes [`.github/workflows/deploy-frontend.yml`](../.github/workflows
 1. Open **Settings → Pages** on `Goose61/bonds`.
 2. Under **Build and deployment**, set **Source** to **GitHub Actions** (not “Deploy from a branch”).
 3. Push this workflow to `frontend` or `main` — the **Deploy frontend to GitHub Pages** action runs automatically.
-4. Optional: add repository **Variables** or **Secrets** to override defaults (Sepolia addresses are baked in):
+4. Optional: add repository **Variables** or **Secrets** (both work) to override defaults. **You must redeploy after changing them** — Vite bakes env vars into the JS bundle at build time, not at runtime.
 
-| Name | Type | Purpose |
-|------|------|---------|
-| `VITE_RPC_URL` | Variable | Preferred RPC (defaults to public Sepolia) |
-| `VITE_CHAIN_ID` | Variable | Default `11155111` |
-| `VITE_CHAIN_NAME` | Variable | Default `Sepolia` |
-| `VITE_BOND_DEPOSITORY` | Variable | Bond contract |
-| `VITE_STAKING` | Variable | Staking contract |
-| `VITE_TIME_TOKEN` | Variable | TRUST token |
-| `VITE_PRINCIPLE_TOKEN` | Variable | uTRST token |
+| Name | Purpose |
+|------|---------|
+| `VITE_RPC_URL` | JSON-RPC endpoint (defaults to public Sepolia) |
+| `VITE_CHAIN_ID` | Default `11155111` |
+| `VITE_CHAIN_NAME` | Default `Sepolia` |
+| `VITE_BOND_DEPOSITORY` | Bond contract |
+| `VITE_STAKING` | Staking contract |
+| `VITE_TIME_TOKEN` | TRUST token |
+| `VITE_PRINCIPLE_TOKEN` | uTRST token |
+
+Check the **Print build config** step in the Actions log to confirm which addresses were embedded in the build.
 
 ### Local production preview (same base path as Pages)
 

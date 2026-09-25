@@ -15,9 +15,10 @@ export const appChain = defineChain({
 export const ZERO = '0x0000000000000000000000000000000000000000' as const
 
 function parseAddress(value: string | undefined): `0x${string}` | undefined {
-  if (!value || value === ZERO) return undefined
-  if (!/^0x[0-9a-fA-F]{40}$/.test(value)) return undefined
-  return value as `0x${string}`
+  const normalized = value?.trim()
+  if (!normalized || normalized === ZERO) return undefined
+  if (!/^0x[0-9a-fA-F]{40}$/.test(normalized)) return undefined
+  return normalized as `0x${string}`
 }
 
 export const contracts = {
