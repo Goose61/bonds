@@ -1,6 +1,6 @@
 import { formatUnits, parseUnits } from 'viem'
 
-export function formatToken(amount: bigint | undefined, decimals = 9, maxFrac = 4): string {
+export function formatToken(amount: bigint | undefined, decimals = 18, maxFrac = 4): string {
   if (amount === undefined) return '—'
   const s = formatUnits(amount, decimals)
   const n = Number(s)
@@ -10,7 +10,7 @@ export function formatToken(amount: bigint | undefined, decimals = 9, maxFrac = 
   return n.toLocaleString(undefined, { maximumFractionDigits: maxFrac })
 }
 
-export function parseTokenInput(value: string, decimals = 9): bigint | null {
+export function parseTokenInput(value: string, decimals = 18): bigint | null {
   const trimmed = value.trim()
   if (!trimmed || Number.isNaN(Number(trimmed))) return null
   try {

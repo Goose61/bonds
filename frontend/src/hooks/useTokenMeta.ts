@@ -2,7 +2,7 @@ import { useReadContracts } from 'wagmi'
 import { erc20Abi } from '../abis'
 import type { ReadContracts } from '../types'
 
-const DEFAULT_TIME_DECIMALS = 9
+const DEFAULT_ERC20_DECIMALS = 18
 
 export function useTokenMeta(token?: `0x${string}`) {
   const contracts = token
@@ -21,7 +21,7 @@ export function useTokenMeta(token?: `0x${string}`) {
 
   return {
     isLoading,
-    decimals: decimalsRaw ?? DEFAULT_TIME_DECIMALS,
+    decimals: decimalsRaw ?? DEFAULT_ERC20_DECIMALS,
     symbol,
   }
 }

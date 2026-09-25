@@ -17,8 +17,9 @@ import type { ReadContracts } from '../types'
 
 export function BondPanel() {
   const { address, chainId } = useAccount()
-  const { bondDepository, principle } = useContractAddresses()
+  const { bondDepository, principle, time } = useContractAddresses()
   const principleMeta = useTokenMeta(principle)
+  const timeMeta = useTokenMeta(time)
 
   const [amount, setAmount] = useState('')
   const [slippage, setSlippage] = useState('5')
@@ -189,7 +190,7 @@ export function BondPanel() {
     <section className="card">
       <h2>Bonds</h2>
       <p className="hint">
-        Deposit {principleMeta.symbol} to receive vesting TIME at a discount.
+        Deposit {principleMeta.symbol} to receive vesting {timeMeta.symbol} at a discount.
       </p>
 
       {!bondReady && (
@@ -205,7 +206,9 @@ export function BondPanel() {
         </div>
         <div className="stat">
           <span className="stat-label">Debt outstanding</span>
-          <span className="stat-value">{formatToken(currentDebt, 9)} TIME</span>
+          <span className="stat-value">
+            {formatToken(currentDebt, timeMeta.decimals)} {timeMeta.symbol}
+          </span>
         </div>
         {vestingDays !== undefined && (
           <div className="stat">
@@ -227,7 +230,10 @@ export function BondPanel() {
         />
         {parsedAmount && estimatedPayout !== undefined && (
           <p className="estimate">
-            Estimated payout: <strong>{formatToken(estimatedPayout, 9)} TIME</strong>
+            Estimated payout:{' '}
+            <strong>
+              {formatToken(estimatedPayout, timeMeta.decimals)} {timeMeta.symbol}
+            </strong>
           </p>
         )}
       </div>
@@ -274,11 +280,15 @@ export function BondPanel() {
           <ul className="position-list">
             <li>
               <span>Total payout remaining</span>
-              <strong>{formatToken(bondInfo?.[0], 9)} TIME</strong>
+              <strong>
+                {formatToken(bondInfo?.[0], timeMeta.decimals)} {timeMeta.symbol}
+              </strong>
             </li>
             <li>
               <span>Claimable now</span>
-              <strong>{formatToken(pendingPayout, 9)} TIME</strong>
+              <strong>
+                {formatToken(pendingPayout, timeMeta.decimals)} {timeMeta.symbol}
+              </strong>
             </li>
             <li>
               <span>Vested</span>
@@ -292,7 +302,7 @@ export function BondPanel() {
               checked={stakeOnRedeem}
               onChange={(e) => setStakeOnRedeem(e.target.checked)}
             />
-            Auto-stake TIME on redeem
+            Auto-stake {timeMeta.symbol} on redeem
           </label>
 
           {stakeOnRedeem && !autoStakeReady && (
@@ -313,7 +323,7 @@ export function BondPanel() {
           >
             {step === 'redeem' && (isPending || isConfirming)
               ? 'Redeeming…'
-              : 'Redeem vested TIME'}
+              : `Redeem vested ${timeMeta.symbol}`}
           </button>
         </div>
       )}
