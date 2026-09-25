@@ -1,0 +1,67 @@
+name: Deploy frontend to GitHub Pages
+
+on:
+  push:
+    branches:
+      - frontend
+      - main
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy-frontend.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build
+        working-directory: frontend
+        env:
+          VITE_BASE_PATH: /ABC_Bonding/
+          VITE_RPC_URL: ${{ vars.VITE_RPC_URL || 'https://ethereum-sepolia.publicnode.com' }}
+          VITE_CHAIN_ID: ${{ vars.VITE_CHAIN_ID || '11155111' }}
+          VITE_CHAIN_NAME: ${{ vars.VITE_CHAIN_NAME || 'Sepolia' }}
+          VITE_BOND_DEPOSITORY: ${{ vars.VITE_BOND_DEPOSITORY || '0x47F72FbD2633767C97Dcc8C9EAfe531A155Ad948' }}
+          VITE_STAKING: ${{ vars.VITE_STAKING || '0x87753332E5988107217f8CD0A30607C03BFC7192' }}
+          VITE_TIME_TOKEN: ${{ vars.VITE_TIME_TOKEN || '0x3D61F5F32F334cF015d538c9A0e686D3b4fC249e' }}
+          VITE_PRINCIPLE_TOKEN: ${{ vars.VITE_PRINCIPLE_TOKEN || '0x86b1741D99208F5A36C00bC1e9632e2179874038' }}
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

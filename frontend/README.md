@@ -57,6 +57,36 @@ npm run build
 npm run preview
 ```
 
+## Deploy to GitHub Pages
+
+The repo includes [`.github/workflows/deploy-frontend.yml`](../.github/workflows/deploy-frontend.yml), which builds `frontend/` and publishes to GitHub Pages on pushes to `frontend` or `main`.
+
+**Live URL (after setup):** https://leruo-m.github.io/ABC_Bonding/
+
+### One-time GitHub setup
+
+1. Open **Settings → Pages** on `LERUO-M/ABC_Bonding`.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions** (not “Deploy from a branch”).
+3. Push this workflow to `frontend` or `main` — the **Deploy frontend to GitHub Pages** action runs automatically.
+4. Optional: add repository **Variables** or **Secrets** to override defaults (Sepolia addresses are baked in):
+
+| Name | Type | Purpose |
+|------|------|---------|
+| `VITE_RPC_URL` | Variable | Preferred RPC (defaults to public Sepolia) |
+| `VITE_CHAIN_ID` | Variable | Default `11155111` |
+| `VITE_CHAIN_NAME` | Variable | Default `Sepolia` |
+| `VITE_BOND_DEPOSITORY` | Variable | Bond contract |
+| `VITE_STAKING` | Variable | Staking contract |
+| `VITE_TIME_TOKEN` | Variable | TRUST token |
+| `VITE_PRINCIPLE_TOKEN` | Variable | uTRST token |
+
+### Local production preview (same base path as Pages)
+
+```bash
+VITE_BASE_PATH=/ABC_Bonding/ npm run build
+npx vite preview --base /ABC_Bonding/
+```
+
 ## Stack
 
 - React + TypeScript + Vite
