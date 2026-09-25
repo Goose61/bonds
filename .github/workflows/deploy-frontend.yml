@@ -40,7 +40,7 @@ jobs:
       - name: Build
         working-directory: frontend
         env:
-          VITE_BASE_PATH: /ABC_Bonding/
+          VITE_BASE_PATH: /bonds/
           VITE_RPC_URL: ${{ vars.VITE_RPC_URL || 'https://ethereum-sepolia.publicnode.com' }}
           VITE_CHAIN_ID: ${{ vars.VITE_CHAIN_ID || '11155111' }}
           VITE_CHAIN_NAME: ${{ vars.VITE_CHAIN_NAME || 'Sepolia' }}

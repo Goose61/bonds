@@ -61,11 +61,11 @@ npm run preview
 
 The repo includes [`.github/workflows/deploy-frontend.yml`](../.github/workflows/deploy-frontend.yml), which builds `frontend/` and publishes to GitHub Pages on pushes to `frontend` or `main`.
 
-**Live URL (after setup):** https://leruo-m.github.io/ABC_Bonding/
+**Live URL (after setup):** https://goose61.github.io/bonds/
 
 ### One-time GitHub setup
 
-1. Open **Settings → Pages** on `LERUO-M/ABC_Bonding`.
+1. Open **Settings → Pages** on `Goose61/bonds`.
 2. Under **Build and deployment**, set **Source** to **GitHub Actions** (not “Deploy from a branch”).
 3. Push this workflow to `frontend` or `main` — the **Deploy frontend to GitHub Pages** action runs automatically.
 4. Optional: add repository **Variables** or **Secrets** to override defaults (Sepolia addresses are baked in):
@@ -83,8 +83,8 @@ The repo includes [`.github/workflows/deploy-frontend.yml`](../.github/workflows
 ### Local production preview (same base path as Pages)
 
 ```bash
-VITE_BASE_PATH=/ABC_Bonding/ npm run build
-npx vite preview --base /ABC_Bonding/
+VITE_BASE_PATH=/bonds/ npm run build
+npx vite preview --base /bonds/
 ```
 
 ## Stack
